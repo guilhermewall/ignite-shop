@@ -4,7 +4,7 @@ import {
   ImageContainer,
   ProductDetails,
 } from "@/styles/pages/product";
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Stripe from "stripe";
@@ -21,9 +21,12 @@ interface ProductProps {
 }
 
 const Product = ({ product }: ProductProps) => {
-  const { query } = useRouter();
+  const { isFallback } = useRouter();
 
-  useEffect(() => {}, []);
+  if (isFallback) {
+    return <p>Loanding...</p>;
+  }
+
   return (
     <ProductContainer>
       <ImageContainer>
@@ -42,6 +45,15 @@ const Product = ({ product }: ProductProps) => {
 };
 
 export default Product;
+
+// getStaticPaths eu devo usar sempre q o ssg da pagina pegar um parametro da url ou de qualquer outro lugar
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [{ params: { id: "prod_PFrQcez226IfHC" } }],
+    fallback: "blocking",
+  };
+};
 
 // o primeiro argumento no generics é apontando qual o retorno no props, o segundo é direndo oq tem no params onde eu falo que o id é uma string
 
